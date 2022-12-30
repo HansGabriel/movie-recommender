@@ -14,12 +14,15 @@ function App() {
 		const interval = setInterval(() => {
 			const imageSrc = webcamRef.current?.getScreenshot();
 			if (imageSrc) {
-				sendMessage(imageSrc);
+				const imageArray = Uint8Array.from(atob(imageSrc.split(",")[1]), (c) =>
+					c.charCodeAt(0)
+				);
+				sendMessage(imageArray);
 			}
 			if (lastMessage) {
 				setResult(lastMessage.data);
 			}
-		}, 1000);
+		}, 500);
 
 		return () => clearInterval(interval);
 	}, [webcamRef, sendMessage, lastMessage]);
@@ -27,12 +30,11 @@ function App() {
 	return (
 		<div
 			style={{
-				// flex flex-row
 				display: "flex",
 				flexDirection: "row",
 			}}
 		>
-			<Webcam audio={false} ref={webcamRef} />
+			<Webcam audio={false} ref={webcamRef} mirrored={true} />
 
 			{result && <img src={result} alt="result" />}
 		</div>
