@@ -50,17 +50,17 @@ for i in range(start, len(new_df)):
 
         new_df.to_csv('../working/movie_emotion.csv', index=False)
 
-# convert the dataframe to an object where the keys are the emotions and the values are the list of 
-# movies that have that emotion in it 
+
 
 emotion_dict = {}
 for i in range(len(new_df)):
     movie_details = new_df.iloc[i]
     emotion = movie_details['Emotion']
     if emotion in emotion_dict:
-        emotion_dict[emotion].append(movie_details['Title'])
+
+        emotion_dict[emotion].append({'title': movie_details['Title'], 'poster_url': movie_details['Poster_Url']})
     else:
-        emotion_dict[emotion] = [movie_details['Title']]
+        emotion_dict[emotion] = [{'title': movie_details['Title'], 'poster_url': movie_details['Poster_Url']}]
 
 # save the emotion_dict to a json file
 import json

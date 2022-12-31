@@ -4,15 +4,20 @@ import useWebSocket from "react-use-websocket";
 
 const WS_URL = "ws://localhost:8000/ws";
 
+type Movie = {
+	title: string;
+	poster_url: string;
+};
+
 type Message = {
 	image: string;
-	movies: string[];
+	movies: Movie[];
 	emotion: string;
 };
 
 function App() {
 	const [image, setImage] = useState<string>("");
-	const [movies, setMovies] = useState<string[]>([]);
+	const [movies, setMovies] = useState<Movie[]>([]);
 	const [emotion, setEmotion] = useState<string>("");
 	const webcamRef = useRef<Webcam>(null);
 
@@ -30,7 +35,7 @@ function App() {
 			if (lastMessage) {
 				const data = JSON.parse(lastMessage.data) as Message;
 				setImage(data.image);
-				setMovies(emotion === data.emotion ? movies : data.movies);
+				setMovies(emotion !== data.emotion ? data.movies : movies);
 				setEmotion(data.emotion);
 			}
 		}, 500);
@@ -44,15 +49,37 @@ function App() {
 				style={{
 					display: "flex",
 					flexDirection: "row",
+					justifyContent: "center",
 				}}
 			>
-				<Webcam audio={false} ref={webcamRef} mirrored={true} />
+				<Webcam audio={false} ref={webcamRef} mirrored={true} height={400} />
 
-				{image && <img src={image} alt="result" />}
+				{image && <img src={image} alt="result" height={400} width={500} />}
 			</div>
-			<div>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "center",
+				}}
+			>
 				{movies.map((movie) => (
-					<p>{movie}</p>
+					<div
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							justifyContent: "center",
+						}}
+					>
+						<img
+							src={movie.poster_url}
+							alt="poster"
+							height={200}
+							width={150}
+							style={{ objectFit: "contain" }}
+						/>
+						<p>{movie.title}</p>
+					</div>
 				))}
 			</div>
 		</>
