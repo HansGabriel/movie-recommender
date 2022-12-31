@@ -4,8 +4,16 @@ import useWebSocket from "react-use-websocket";
 
 const WS_URL = "ws://localhost:8000/ws";
 
+type Message = {
+	image: string;
+	movies: string[];
+	emotion: string;
+};
+
 function App() {
-	const [result, setResult] = useState<string | null>(null);
+	const [image, setImage] = useState<string>("");
+	const [movies, setMovies] = useState<string[]>([]);
+	const [emotion, setEmotion] = useState<string>("");
 	const webcamRef = useRef<Webcam>(null);
 
 	const { sendMessage, lastMessage, readyState } = useWebSocket(WS_URL);
@@ -20,7 +28,10 @@ function App() {
 				sendMessage(imageArray);
 			}
 			if (lastMessage) {
-				setResult(lastMessage.data);
+				const data = JSON.parse(lastMessage.data) as Message;
+				setImage(data.image);
+				setMovies(emotion === data.emotion ? movies : data.movies);
+				setEmotion(data.emotion);
 			}
 		}, 500);
 
@@ -28,16 +39,23 @@ function App() {
 	}, [webcamRef, sendMessage, lastMessage]);
 
 	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "row",
-			}}
-		>
-			<Webcam audio={false} ref={webcamRef} mirrored={true} />
+		<>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "row",
+				}}
+			>
+				<Webcam audio={false} ref={webcamRef} mirrored={true} />
 
-			{result && <img src={result} alt="result" />}
-		</div>
+				{image && <img src={image} alt="result" />}
+			</div>
+			<div>
+				{movies.map((movie) => (
+					<p>{movie}</p>
+				))}
+			</div>
+		</>
 	);
 }
 
