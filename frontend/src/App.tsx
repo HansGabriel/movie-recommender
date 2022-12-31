@@ -44,7 +44,7 @@ function App() {
 	}, [webcamRef, sendMessage, lastMessage]);
 
 	return (
-		<div style={{ backgroundColor: "#eee", padding: "20px" }}>
+		<div style={{ padding: "20px" }}>
 			<h1 style={{ textAlign: "center", fontFamily: "Poppins" }}>
 				Mood Detector and Movie Recommendations System
 			</h1>
