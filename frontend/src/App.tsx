@@ -44,23 +44,25 @@ function App() {
 	}, [webcamRef, sendMessage, lastMessage]);
 
 	return (
-		<>
+		<div style={{ backgroundColor: "#eee", padding: "20px" }}>
+			<h1 style={{ textAlign: "center", fontFamily: "Poppins" }}>
+				Mood Detector and Movie Recommendations System
+			</h1>
+			<div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
+				<Webcam audio={false} ref={webcamRef} mirrored={true} height={400} />
+				{image && <img src={image} alt="result" height={400} width={500} />}
+			</div>
+			<h2 style={{ textAlign: "center", fontFamily: "Poppins" }}>
+				Recommended Movies based on Mood
+			</h2>
 			<div
 				style={{
 					display: "flex",
 					flexDirection: "row",
+					alignItems: "center",
+					flexWrap: "wrap",
 					justifyContent: "center",
-				}}
-			>
-				<Webcam audio={false} ref={webcamRef} mirrored={true} height={400} />
-
-				{image && <img src={image} alt="result" height={400} width={500} />}
-			</div>
-			<div
-				style={{
-					display: "flex",
-					flexDirection: "column",
-					justifyContent: "center",
+					gap: 40,
 				}}
 			>
 				{movies.map((movie) => (
@@ -68,7 +70,8 @@ function App() {
 						style={{
 							display: "flex",
 							flexDirection: "column",
-							justifyContent: "center",
+							alignItems: "center",
+							gap: "20px",
 						}}
 					>
 						<img
@@ -78,11 +81,17 @@ function App() {
 							width={150}
 							style={{ objectFit: "contain" }}
 						/>
-						<p>{movie.title}</p>
+						<p
+							style={{
+								fontFamily: "Poppins",
+							}}
+						>
+							{movie.title}
+						</p>
 					</div>
 				))}
 			</div>
-		</>
+		</div>
 	);
 }
 
