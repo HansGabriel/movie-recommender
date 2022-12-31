@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import useWebSocket from "react-use-websocket";
 
-const WS_URL = "ws://localhost:8000/ws";
-
 type Movie = {
 	title: string;
 	poster_url: string;
@@ -21,7 +19,9 @@ function App() {
 	const [emotion, setEmotion] = useState<string>("");
 	const webcamRef = useRef<Webcam>(null);
 
-	const { sendMessage, lastMessage, readyState } = useWebSocket(WS_URL);
+	const { sendMessage, lastMessage, readyState } = useWebSocket(
+		import.meta.env.VITE_WS_URL
+	);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
