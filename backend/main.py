@@ -59,15 +59,30 @@ async def websocket_endpoint(websocket: WebSocket):
         try: 
             result = DeepFace.analyze(image, actions=['emotion'], detector_backend='opencv')
 
-            cv2.rectangle(image, (result['region']['x'], result['region']['y']), (result['region']['x'] + result['region']['w'], result['region']['y'] + result['region']['h']), (0, 255, 0), 2)
-            cv2.putText(image, result['dominant_emotion'], (result['region']['x'], result['region']['y'] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36,255,12), 2)
+            x = result['region']['x']
+            y = result['region']['y']
+            width = result['region']['w']
+            height = result['region']['h']
+            emotion = result['dominant_emotion']
+
+            rectangle_color = (0, 255, 0)
+            text_color = (36,255,12)
+            text_scale = 0.9
+            thickness = 2
+
+
+            cv2.rectangle(image, (x, y), (x + width, y + height), rectangle_color, thickness)
+            cv2.putText(image, emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, text_scale, text_color, thickness)
 
             _, buffer = cv2.imencode('.jpg', image)
             image_data = base64.b64encode(buffer)
-            # get 5 random movies from the emotion
             movies = get_emotion(result['dominant_emotion'], 5)
-            # return a json object with the image and the movies
-            await websocket.send_json({'image': f'data:image/jpeg;base64,{image_data.decode("utf-8")}', 'movies': movies, 'emotion': result['dominant_emotion']})
+            response = {
+                'image': f'data:image/jpeg;base64,{image_data.decode("utf-8")}',
+                'movies': movies,
+                'emotion': result['dominant_emotion']
+            }
+            await websocket.send_json(response)
         except:
             _, buffer = cv2.imencode('.jpg', image)
             image_data = base64.b64encode(buffer)
